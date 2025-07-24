@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,17 +13,16 @@ import {
 
 type Material = {
   id: string
+  name: string
   category: {
     name: string
   } | null
-  name: string
 }
 
 export function ListMateri({ data }: { data: Material[] }) {
-  
   if (data.length === 0) {
     return (
-      <div className="text-center py-4">
+      <div className="text-center py-4 text-muted-foreground">
         Tidak ada materi yang telah di-approve.
       </div>
     )
@@ -43,11 +41,15 @@ export function ListMateri({ data }: { data: Material[] }) {
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.id} className="hover:bg-accent">
-              <TableCell className="text-center">{item.category?.name}</TableCell>
+              <TableCell className="text-center">
+                {item.category?.name ?? "-"}
+              </TableCell>
               <TableCell className="text-center">{item.name}</TableCell>
               <TableCell className="text-center">
                 <Link href={`/materi/detail/${item.id}`}>
-                  <Button variant="outline" size="sm">Detail</Button>
+                  <Button variant="outline" size="sm">
+                    Detail
+                  </Button>
                 </Link>
               </TableCell>
             </TableRow>

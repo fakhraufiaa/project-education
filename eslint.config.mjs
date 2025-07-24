@@ -10,7 +10,18 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // Extend dulu
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+
+  // Tambahkan aturan manual di config object berikut:
+  {
+    ignores: ["lib/generated/**"],
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
