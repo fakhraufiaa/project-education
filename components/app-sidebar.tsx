@@ -85,17 +85,17 @@ useEffect(() => {
       },
       {
         title: "List Materi",
-        url: "/materi/kategori",
+        url: "/kategori",
         icon: IconListDetails,
       },
       {
         title: "Kategori",
-        url: "/materi/kategori/create",
+        url: "/kategori/create",
         icon: IconDatabase,
       },
       {
         title: "Approval Materi",
-        url: "/materi/approved",
+        url: "/approved",
         icon: IconChecklist,
       },
     ],
@@ -107,7 +107,7 @@ useEffect(() => {
       },
       {
         title: "List Materi",
-        url: "/materi/kategori",
+        url: "/kategori",
         icon: IconListDetails,
       },
       {
@@ -117,7 +117,7 @@ useEffect(() => {
       },
       {
         title: "Kategori",
-        url: "/materi/kategori/create",
+        url: "/kategori/create",
         icon: IconDatabase,
       },
     ],

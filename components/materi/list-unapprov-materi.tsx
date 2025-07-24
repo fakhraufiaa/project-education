@@ -75,7 +75,7 @@ export function ApprovedMateri({ data }: { data: Material[] }) {
               <TableCell className="text-center">{item.title}</TableCell>
               <TableCell className="text-center">
                 <div className="flex justify-center gap-2">
-                  <Link href={`/materi/list/detail/${item.id}`}>
+                  <Link href={`/materi/detail/${item.id}`}>
                     <button className="border border-gray-400 text-gray-700 px-2 py-1 rounded hover:bg-gray-100 transition-all">
                       Detail
                     </button>

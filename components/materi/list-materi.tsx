@@ -46,7 +46,7 @@ export function ListMateri({ data }: { data: Material[] }) {
               <TableCell className="text-center">{item.category?.name}</TableCell>
               <TableCell className="text-center">{item.name}</TableCell>
               <TableCell className="text-center">
-                <Link href={`/materi/list/detail/${item.id}`}>
+                <Link href={`/materi/detail/${item.id}`}>
                   <Button variant="outline" size="sm">Detail</Button>
                 </Link>
               </TableCell>
