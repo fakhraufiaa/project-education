@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@/lib/generated/prisma"
-import { writeFile, mkdir } from "fs/promises"
-import path from "path"
-import fs from "fs"
+import { supabase } from "@/lib/supabase"
 
 const prisma = new PrismaClient()
-
-async function ensureDir(dir: string) {
-  if (!fs.existsSync(dir)) {
-    await mkdir(dir, { recursive: true })
-  }
-}
 
 export async function POST(req: Request) {
   try {
@@ -25,55 +17,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Field wajib diisi" }, { status: 400 })
     }
 
-    // Handle image (optional)
-    const image = data.get("image") as File | null
-    let imagePath = null
-    if (image && image.size > 0) {
-      if (!image.type.startsWith("image/")) {
-        return NextResponse.json({ message: "File gambar tidak valid" }, { status: 400 })
-      }
-      const bytes = await image.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      const fileName = `${Date.now()}-${image.name}`
-      const dir = path.join(process.cwd(), "public/uploads/image")
-      await ensureDir(dir)
-      const filePath = path.join(dir, fileName)
-      await writeFile(filePath, buffer)
-      imagePath = `/image/${fileName}`
+    const uploadToSupabase = async (file: File | null, folder: string) => {
+      if (!file || file.size === 0) return null
+      const ext = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${ext}`
+      const path = `${folder}/${fileName}`
+
+      const { error } = await supabase.storage.from('uploads').upload(path, file, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+      if (error) throw error
+
+      const { data: publicUrlData } = supabase.storage.from('uploads').getPublicUrl(path)
+      return publicUrlData?.publicUrl || null
     }
 
-    // Handle folder (optional)
-    const folder = data.get("folder") as File | null
-    let folderPath = null
-    if (folder && folder.size > 0) {
-      const bytes = await folder.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      const fileName = `${Date.now()}-${folder.name}`
-      const dir = path.join(process.cwd(), "public/uploads/file")
-      await ensureDir(dir)
-      const filePath = path.join(dir, fileName)
-      await writeFile(filePath, buffer)
-      folderPath = `/file/${fileName}`
-    }
+    const imagePath = await uploadToSupabase(data.get("image") as File, "image")
+    const folderPath = await uploadToSupabase(data.get("folder") as File, "file")
+    const radioPath = await uploadToSupabase(data.get("audio") as File, "audio")
 
-    // Handle audio (optional)
-    const audio = data.get("audio") as File | null
-    let radioPath = null
-    if (audio && audio.size > 0) {
-      if (!audio.type.startsWith("audio/")) {
-        return NextResponse.json({ message: "File audio tidak valid" }, { status: 400 })
-      }
-      const bytes = await audio.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      const fileName = `${Date.now()}-${audio.name}`
-      const dir = path.join(process.cwd(), "public/uploads/audio")
-      await ensureDir(dir)
-      const filePath = path.join(dir, fileName)
-      await writeFile(filePath, buffer)
-      radioPath = `/audio/${fileName}`
-    }
-
-    // Simpan ke database
     const result = await prisma.materi.create({
       data: {
         title,

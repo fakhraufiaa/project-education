@@ -90,7 +90,7 @@ export default function MateriDetail({ materi }: { materi: any }) {
               <div>
                 <p className="text-sm font-medium mb-1">Audio</p>
                 <audio controls className="w-full">
-                  <source src={`/uploads/${materi.radio}`} type="audio/mpeg" />
+                  <source src={`${materi.radio}`} type="audio/mpeg" />
                   Browser tidak mendukung audio player.
                 </audio>
               </div>
@@ -107,7 +107,7 @@ export default function MateriDetail({ materi }: { materi: any }) {
               )}
               {materi.folder && (
                 <a
-                  href={`/uploads/${materi.folder}`}
+                  href={`${materi.folder}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-blue-600 hover:underline"
