@@ -46,8 +46,18 @@ export function ApprovedMateri({ data }: { data: Material[] }) {
         alert(result.message || "Gagal meng-approve materi")
       } else {
         alert("Materi berhasil di-approve")
+
+        // Update state lokal
+        setMaterialList((prev) =>
+          prev.map((mat) =>
+            mat.id === id ? { ...mat, approved: true } : mat
+          )
+        )
+
+        // Refresh dari server juga (untuk sinkronisasi tambahan)
         router.refresh()
       }
+
     } catch (error) {
       console.error(error)
       alert("Terjadi kesalahan saat approve")

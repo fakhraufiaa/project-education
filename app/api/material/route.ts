@@ -62,7 +62,8 @@ export async function GET(req: Request) {
   const materi = await prisma.materi.findMany({
     select: { 
       id: true, 
-      title: true, 
+      title: true,
+      approved: true, 
       category: { select: {name: true}
     } 
   },
