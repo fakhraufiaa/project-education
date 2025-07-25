@@ -66,6 +66,42 @@ export function ApprovedMateri({ data }: { data: Material[] }) {
     }
   }
 
+  const handleDelete = async (id: number) => {
+  const konfirmasi = confirm("Yakin ingin menghapus materi ini?")
+  if (!konfirmasi) return
+
+  setLoadingId(id)
+
+  try {
+    const res = await fetch(`/api/material/deleted/${id}`, {
+      method: "GET",
+      headers: {
+        "x-role-id": "1", // Hanya admin bisa delete
+      },
+    })
+
+    const result = await res.json()
+
+    if (!res.ok) {
+      alert(result.message || "Gagal menghapus materi")
+    } else {
+      alert("Materi berhasil dihapus")
+
+      // Update lokal state
+      setMaterialList((prev) => prev.filter((mat) => mat.id !== id))
+
+      // Refresh router untuk sinkronisasi
+      router.refresh()
+    }
+  } catch (error) {
+    console.error(error)
+    alert("Terjadi kesalahan saat menghapus")
+  } finally {
+    setLoadingId(null)
+  }
+}
+
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -98,7 +134,16 @@ export function ApprovedMateri({ data }: { data: Material[] }) {
                     >
                       {loadingId === item.id ? "Menyetujui..." : "Approve"}
                     </button>
+                    
                   )}
+
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition-all"
+                    disabled={loadingId === item.id}
+                  >
+                    {loadingId === item.id ? "Menghapus..." : "Delete"}
+                  </button>
                 </div>
               </TableCell>
               
